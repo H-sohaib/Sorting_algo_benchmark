@@ -3,75 +3,128 @@
 #include <time.h>
 #include "SortAlgorithm.h"
 
+void copyArray(int *original, int *copy, int size)
+{
+    for (int i = 0; i < size; i++)
+    {
+        copy[i] = original[i];
+    }
+}
 void printArray(int A[], int size)
 {
-  int i;
-  for (i = 0; i < size; i++)
-    printf("%d ", A[i]);
-  printf("\n");
+    int i;
+    for (i = 0; i < size; i++)
+        printf("%d ", A[i]);
+    printf("\n");
 }
 
-// doit n=10,000 ---> n=1,000,000
-/*
+// Bubble Sort
+//* void bubbleSort(int arr[], int n);
+// InertionSort
+//* void insertionSort(int arr[], int n);
+// Selection Sort
+//* void selectionSort(int arr[], int n);
+// Quick Sort
+//* void quickSort(int array[], int low, int high);
+// Merge Sort
+//* void mergeSort(int arr[], int l, int r);
+// Heap Sort
+//* void heapSort(int arr[], int N);
 
-* 1 initialize array with n
-* 2 fill array with element
-// -------------------------------------
-* 3 - make copy of array
-* 5 ---- start the chrono
-* 4 - pass the copy to sort function
-* 3 sort the array with one of sort alg
-* 4 ---- end chrono
-* 5 save the chrono time in array
+// Cocktail Sort (Improved Bubble Sort)
 
-*/
+// Counting Sort
+
+// Radix Sort
+
+// Driver code
 int main()
 {
-  int n = 1000;
-  int n_max = 1000000;
-  time_t t1;
-  // int arr[n_max];
-  // int bubbleResult[n_max - n + 1];
-  int *dArray = (int *)malloc(n * sizeof(int)); // Dynamically allocate memory for an array of integers
+    int step = 10000;
+    int n = 10000;
+    int n_max = 100000;
+    int it = 0;
+    clock_t start, end;
+    double tim1[10], tim2[10], tim3[10];
 
-  if (dArray == NULL)
-  {
-    printf("Memory allocation failed. Exiting...\n");
-    return 1; // Return an error code
-  }
+    // initiialize a dynam array
+    int *array = malloc(n * sizeof(int));
+    if (array == NULL)
+    {
+        printf("Memory allocation failed. Exiting...\n");
+        return 1;
+    }
 
-  printf("started \n");
+    printf("Done --> Initilize vars \n");
 
-  srand(time(&t1)); // to get random number in each execution of the programe
-  // initialize the array & fill it
-  for (int i = 0; i < n; i++)
-  {
-    dArray[i] = rand() % 50;
-  }
+    FILE *data_file = fopen("./sorting_times.txt", "w");
+    fprintf(data_file, "A_size Bubble Insertion Selection v2\n");
 
-  for (int j = n; j < n_max; j++)
-  {
-    //* -----------------------------------------------------------------------
+    printf("Start benchmark ... \n");
+    printf("%-12s%-12s%-12s%-12s\n", "Array n", "Bubble", "Insert", "Selection");
 
-    clock_t start = clock(); // Record the starting time
-    bubbleSort(dArray, n);
-    // heapSort(arr, n);
-    // insertionSort(arr, n);
-    // mergeSort(arr, 0, n - 1);
-    // quickSort(arr, 0, n - 1);
-    // selectionSort(arr, n);
+    for (int i = n; i <= n_max; i += step)
+    {
+        int *new_array = (int *)realloc(array, i * sizeof(int));
+        if (new_array != NULL)
+        {
+            array = new_array;
+        }
+        else
+        {
+            printf("Failf to realloc ! Exiting ...");
+            return 1;
+        }
 
-    clock_t end = clock();                                        // Record the ending time
-    double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC; // Calculate the time taken in seconds
+        // option 1 : refill all the array random number ------------------------------------------------------------------
+        // fill the array with random number 0 --> 1000
+        for (int j = 0; j < i; j++)
+        {
+            array[j] = rand() % 1000 + 1;
+        }
 
-    printf("Time taken: %f seconds\n", time_taken);
+        //* Bubble sort ----
+        int *bubbleArr = malloc(i * sizeof(int));
+        copyArray(array, bubbleArr, i);
 
-    // printf("\nSorted array is \n");
-    // printArray(dArray, n);
+        start = clock();
+        bubbleSort(bubbleArr, i);
+        end = clock();
+        tim1[it] = ((double)(end - start));
 
-    free(dArray);
-    return 1;
-  }
+        //* Insertion sort
+        int *inserArr = malloc(i * sizeof(int));
+        copyArray(array, inserArr, i);
 
-  // printf("Given array is \n");
-  // printArray(arr, n);
+        start = clock();
+        insertionSort(inserArr, i);
+        end = clock();
+        tim2[it] = ((double)(end - start));
+
+        //* Selection sort ---
+        int *selectArr = malloc(i * sizeof(int));
+        copyArray(array, selectArr, i);
+        start = clock();
+        selectionSort(selectArr, i);
+        end = clock();
+        tim3[it] = ((double)(end - start));
+
+        printf("%-12li%-12li%-12li%-12li\n",
+               i,
+               (long int)tim1[it],
+               (long int)tim2[it],
+               (long int)tim3[it]);
+        fprintf(data_file, "%li %li %li %li\n", i, (long int)tim1[it], (long int)tim2[it], (long int)tim3[it]);
+    }
+    /*   FILE* data_file = fopen("C:\\Users\\Hp\\Desktop\\\Faissal\\\miniProjetPerformTriAlgo\\sorting_times.txt", "w");
+
+      // Output the data to the file
+      fprintf(data_file, "A_size Bubble Insertion Selection\n");
+      for (int it = 0; it < 10; it++) {
+          fprintf(data_file, "%li %li %li %li\n", n, (long int)tim1[it], (long int)tim2[it], (long int)tim3[it]);
+          n += 10000;
+      }
+  */
+    fclose(data_file);
+    return 0;
+}
