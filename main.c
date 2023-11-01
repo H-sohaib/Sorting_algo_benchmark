@@ -43,9 +43,9 @@ int main()
     int step = 10000;
     int n = 10000;
     int n_max = 100000;
-    int it = 0;
+    int n_algo = 3;
     clock_t start, end;
-    double tim1[10], tim2[10], tim3[10];
+    double time_records[n_algo];
 
     // initiialize a dynam array
     int *array = malloc(n * sizeof(int));
@@ -58,7 +58,7 @@ int main()
     printf("Done --> Initilize vars \n");
 
     FILE *data_file = fopen("./sorting_times.txt", "w");
-    fprintf(data_file, "A_size Bubble Insertion Selection v2\n");
+    // fprintf(data_file, "A_size Bubble Insertion Selection v2\n");
 
     printf("Start benchmark ... \n");
     printf("%-12s%-12s%-12s%-12s\n", "Array n", "Bubble", "Insert", "Selection");
@@ -72,7 +72,7 @@ int main()
         }
         else
         {
-            printf("Failf to realloc ! Exiting ...");
+            printf("Fail to realloc ! Exiting ...");
             return 1;
         }
 
@@ -90,7 +90,7 @@ int main()
         start = clock();
         bubbleSort(bubbleArr, i);
         end = clock();
-        tim1[it] = ((double)(end - start));
+        time_records[0] = ((double)(end - start));
 
         //* Insertion sort
         int *inserArr = malloc(i * sizeof(int));
@@ -99,32 +99,34 @@ int main()
         start = clock();
         insertionSort(inserArr, i);
         end = clock();
-        tim2[it] = ((double)(end - start));
+        time_records[1] = ((double)(end - start));
 
-        //* Selection sort ---
+        //* Selection sort -----
         int *selectArr = malloc(i * sizeof(int));
         copyArray(array, selectArr, i);
         start = clock();
         selectionSort(selectArr, i);
         end = clock();
-        tim3[it] = ((double)(end - start));
+        time_records[2] = ((double)(end - start));
 
-        printf("%-12li%-12li%-12li%-12li\n",
-               i,
-               (long int)tim1[it],
-               (long int)tim2[it],
-               (long int)tim3[it]);
-        fprintf(data_file, "%li %li %li %li\n", i, (long int)tim1[it], (long int)tim2[it], (long int)tim3[it]);
+        //*---- show results in console
+        printf("%-12li", i);
+        for (int i = 0; i < n_algo; i++)
+        {
+            printf("%-12li",
+                   (long int)time_records[i]);
+        }
+        printf("\n");
+        //*---- write result in GNUplot file
+        fprintf(data_file, "%li ", i);
+        for (int i = 0; i < n_algo; i++)
+        {
+            fprintf(data_file, "%li ", (long int)time_records[i]);
+        }
+        fprintf(data_file, "\n");
     }
-    /*   FILE* data_file = fopen("C:\\Users\\Hp\\Desktop\\\Faissal\\\miniProjetPerformTriAlgo\\sorting_times.txt", "w");
 
-      // Output the data to the file
-      fprintf(data_file, "A_size Bubble Insertion Selection\n");
-      for (int it = 0; it < 10; it++) {
-          fprintf(data_file, "%li %li %li %li\n", n, (long int)tim1[it], (long int)tim2[it], (long int)tim3[it]);
-          n += 10000;
-      }
-  */
     fclose(data_file);
+    system("gnuplot -persist plot_script.gnuplot");
     return 0;
 }
