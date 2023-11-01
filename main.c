@@ -1,4 +1,6 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 #include "SortAlgorithm.h"
 
 void printArray(int A[], int size)
@@ -23,19 +25,27 @@ void printArray(int A[], int size)
 * 5 save the chrono time in array
 
 */
-int main()
+void main()
 {
   int n = 10000;
-  int arr[n];
-  for (int i = 0; i < n; i++) {
-    arr[i] = ra
+  int n_max = 510000;
+  int arr[n_max];
+  // int bubbleResult[n_max - n + 1];
+  time_t t1;
+
+  printf("started \n");
+
+  srand(time(&t1)); // to get random number in each execution of the programe
+
+  // for()
+  // initialize the array & fill it
+  for (int i = 0; i < n_max; i++)
+  {
+    arr[i] = rand() % 1000;
   }
+  //* -----------------------------------------------------------------------
 
-    int na = sizeof(arr) / sizeof(arr[0]);
-
-  printf("Given array is \n");
-  printArray(arr, n);
-
+  clock_t start = clock(); // Record the starting time
   bubbleSort(arr, n);
   // heapSort(arr, n);
   // insertionSort(arr, n);
@@ -43,7 +53,15 @@ int main()
   // quickSort(arr, 0, n - 1);
   // selectionSort(arr, n);
 
-  printf("\nSorted array is \n");
-  printArray(arr, n);
-  return 0;
+  clock_t end = clock();                                        // Record the ending time
+  double time_taken = ((double)(end - start)) / CLOCKS_PER_SEC; // Calculate the time taken in seconds
+
+  printf("Time taken: %f seconds\n", time_taken);
+
+  // printf("\nSorted array is \n");
+  // printf("\nSorted array is \n");
+  // printArray(arr, n);
 }
+
+// printf("Given array is \n");
+// printArray(arr, n);
