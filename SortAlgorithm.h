@@ -4,3 +4,4 @@ void insertionSort(int arr[], int n);
 void mergeSort(int arr[], int l, int r);
 void quickSort(int array[], int low, int high);
 void selectionSort(int arr[], int n);
+void radixSort(int array[], int size)

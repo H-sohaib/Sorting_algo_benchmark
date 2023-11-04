@@ -18,38 +18,19 @@ void printArray(int A[], int size)
     printf("\n");
 }
 
-// Bubble Sort
-//* void bubbleSort(int arr[], int n);
-// InertionSort
-//* void insertionSort(int arr[], int n);
-// Selection Sort
-//* void selectionSort(int arr[], int n);
-// Quick Sort
-//* void quickSort(int array[], int low, int high);
-// Merge Sort
-//* void mergeSort(int arr[], int l, int r);
-// Heap Sort
-//* void heapSort(int arr[], int N);
-
-// Cocktail Sort (Improved Bubble Sort)
-
-// Counting Sort
-
-// Radix Sort
-
-// Driver code
 int main()
 {
     int step = 10000;
     int n = 10000;
     int n_max = 100000;
-    int n_algo = 3;
+    int n_algo = 7;
     clock_t start, end;
     double time_records[n_algo];
 
     // initiialize a dynam array
     int *array = malloc(n * sizeof(int));
-    if (array == NULL)
+    int *alg_array = malloc(i * sizeof(int));
+    if (array == NULL || alg_array == NULL)
     {
         printf("Memory allocation failed. Exiting...\n");
         return 1;
@@ -61,14 +42,17 @@ int main()
     // fprintf(data_file, "A_size Bubble Insertion Selection v2\n");
 
     printf("Start benchmark ... \n");
-    printf("%-12s%-12s%-12s%-12s\n", "Array n", "Bubble", "Insert", "Selection");
+    printf("%-12s%-12s%-12s%-12s%-12s%-12s%-12s%-12s\n", "Array n", "Bubble", "Heap", "Insert", "Merge", "Quick", "Selection", "Redix");
 
     for (int i = n; i <= n_max; i += step)
     {
         int *new_array = (int *)realloc(array, i * sizeof(int));
-        if (new_array != NULL)
+        int *new_alg_array = (int *)realloc(array, i * sizeof(int));
+
+        if (new_array != NULL || new_alg_array != NULL)
         {
             array = new_array;
+            alg_array = new_alg_array;
         }
         else
         {
@@ -84,30 +68,53 @@ int main()
         }
 
         //* Bubble sort ----
-        int *bubbleArr = malloc(i * sizeof(int));
-        copyArray(array, bubbleArr, i);
-
+        copyArray(array, alg_array, i);
         start = clock();
-        bubbleSort(bubbleArr, i);
+        bubbleSort(alg_array, i);
         end = clock();
         time_records[0] = ((double)(end - start));
 
-        //* Insertion sort
-        int *inserArr = malloc(i * sizeof(int));
-        copyArray(array, inserArr, i);
-
+        //* Heap sort ----
+        copyArray(array, alg_array, i);
         start = clock();
-        insertionSort(inserArr, i);
+        heapSort(alg_array, i);
         end = clock();
         time_records[1] = ((double)(end - start));
 
-        //* Selection sort -----
-        int *selectArr = malloc(i * sizeof(int));
-        copyArray(array, selectArr, i);
+        //* Insertion sort
+        copyArray(array, alg_array, i);
         start = clock();
-        selectionSort(selectArr, i);
+        insertionSort(alg_array, i);
         end = clock();
         time_records[2] = ((double)(end - start));
+
+        //* merge sort
+        copyArray(array, alg_array, i);
+        start = clock();
+        mergeSort(alg_array, 0, i);
+        end = clock();
+        time_records[3] = ((double)(end - start));
+
+        //* Quick sort
+        copyArray(array, alg_array, i);
+        start = clock();
+        quickSort(alg_array, 0, i);
+        end = clock();
+        time_records[4] = ((double)(end - start));
+
+        //* Selection sort -----
+        copyArray(array, alg_array, i);
+        start = clock();
+        selectionSort(alg_array, i);
+        end = clock();
+        time_records[5] = ((double)(end - start));
+
+        //* Redix sort -----
+        copyArray(array, alg_array, i);
+        start = clock();
+        radixSort(alg_array, i);
+        end = clock();
+        time_records[6] = ((double)(end - start));
 
         //*---- show results in console
         printf("%-12li", i);
