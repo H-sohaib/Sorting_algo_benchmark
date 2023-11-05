@@ -260,7 +260,7 @@ int getMax(int array[], int n)
       max = array[i];
   return max;
 }
-void countingSort(int array[], int size, int place)
+void countingSort_radix(int array[], int size, int place)
 {
   int output[size + 1];
   int max = (array[0] / place) % 10;
@@ -301,5 +301,108 @@ void radixSort(int array[], int size)
 
   // Apply counting sort to sort elements based on place value.
   for (int place = 1; max / place > 0; place *= 10)
-    countingSort(array, size, place);
+    countingSort_radix(array, size, place);
+}
+
+//* Counting Sort ******************************************
+void countingSort(int array[], int size)
+{
+  int output[10];
+
+  // Find the largest element of the array
+  int max = array[0];
+  for (int i = 1; i < size; i++)
+  {
+    if (array[i] > max)
+      max = array[i];
+  }
+
+  // The size of count must be at least (max+1) but
+  // we cannot declare it as int count(max+1) in C as
+  // it does not support dynamic memory allocation.
+  // So, its size is provided statically.
+  int count[10];
+
+  // Initialize count array with all zeros.
+  for (int i = 0; i <= max; ++i)
+  {
+    count[i] = 0;
+  }
+
+  // Store the count of each element
+  for (int i = 0; i < size; i++)
+  {
+    count[array[i]]++;
+  }
+
+  // Store the cummulative count of each array
+  for (int i = 1; i <= max; i++)
+  {
+    count[i] += count[i - 1];
+  }
+
+  // Find the index of each element of the original array in count array, and
+  // place the elements in output array
+  for (int i = size - 1; i >= 0; i--)
+  {
+    output[count[array[i]] - 1] = array[i];
+    count[array[i]]--;
+  }
+
+  // Copy the sorted elements into original array
+  for (int i = 0; i < size; i++)
+  {
+    array[i] = output[i];
+  }
+}
+
+//* Cycle Sort **********************************************************
+void cycleSort(int a[], int n)
+{
+  int start, element, pos, temp, i;
+
+  /*Loop to traverse the array elements and place them on the correct position*/
+  for (start = 0; start <= n - 2; start++)
+  {
+    element = a[start];
+
+    /*position to place the element*/
+    pos = start;
+
+    for (i = start + 1; i < n; i++)
+      if (a[i] < element)
+        pos++;
+    if (pos == start) /*if the element is at exact position*/
+      continue;
+    while (element == a[pos])
+      pos += 1;
+    if (pos != start) /*put element at its exact position*/
+    {
+      // swap(element, a[pos]);
+      temp = element;
+      element = a[pos];
+      a[pos] = temp;
+    }
+    /*Rotate rest of the elements*/
+    while (pos != start)
+    {
+      pos = start;
+      /*find position to put the element*/
+      for (i = start + 1; i < n; i++)
+        if (a[i] < element)
+          pos += 1;
+
+      /*Ignore duplicate elements*/
+      while (element == a[pos])
+        pos += 1;
+
+      /*put element to its correct position*/
+      if (element != a[pos])
+      {
+        temp = element;
+        element = a[pos];
+        a[pos] = temp;
+      }
+    }
+  }
 }
