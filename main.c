@@ -45,10 +45,9 @@ double run3args_algos(void (*algo_func)(int *, int, int), int array[], int l, in
 
 int main()
 {
-
-    int step = 10000;
     int n = 10000;
     int n_max = 100000;
+    int step = 10000;
     int n_2args_algo = 6;
     int n_3args_algo = 2;
 
@@ -78,18 +77,15 @@ int main()
     for (int i = n; i <= n_max; i += step)
     {
         int *new_array = (int *)realloc(array, i * sizeof(int));
-        int *new_alg_array = (int *)realloc(alg_array, i * sizeof(int));
 
-        if (new_array != NULL && new_alg_array != NULL)
+        if (new_array != NULL)
         {
             array = new_array;
-            alg_array = new_alg_array;
         }
         else
         {
             printf("Fail to realloc ! Exiting ...");
             free(array);
-            free(alg_array);
             return 1;
         }
 
@@ -97,7 +93,9 @@ int main()
         // fill the array with random number 0 --> 1000
         for (int j = 0; j < i; j++)
         {
-            array[j] = rand() % 1000 + 1;
+            // array[j] = rand() % 1000 + 1;
+            // array[j] = j;
+            array[j] = i - j;
         }
 
         // run the 2 args sorting algorithme
@@ -110,7 +108,7 @@ int main()
         {
             time_records[k] = run3args_algos(point_3algo_funcs[k - 6], array, 0, i);
         }
-        
+
         /*
                 //* Bubble sort ----
                 copyArray(array, alg_array, i);

@@ -93,7 +93,6 @@ void heapSort(int arr[], int N)
     heapify(arr, i, 0);
   }
 }
-
 //* Insertion Sort  **************************************
 void insertionSort(int arr[], int n)
 {
